@@ -1,0 +1,8 @@
+C:\Users\MSE\source\repos\TelegramCommandHandler\TelegramCommandHandler\bin\Debug\netcoreapp2.2\TelegramCommandHandler.deps.json
+C:\Users\MSE\source\repos\TelegramCommandHandler\TelegramCommandHandler\bin\Debug\netcoreapp2.2\TelegramCommandHandler.dll
+C:\Users\MSE\source\repos\TelegramCommandHandler\TelegramCommandHandler\bin\Debug\netcoreapp2.2\TelegramCommandHandler.pdb
+C:\Users\MSE\source\repos\TelegramCommandHandler\TelegramCommandHandler\obj\Debug\netcoreapp2.2\TelegramCommandHandler.csproj.CoreCompileInputs.cache
+C:\Users\MSE\source\repos\TelegramCommandHandler\TelegramCommandHandler\obj\Debug\netcoreapp2.2\TelegramCommandHandler.AssemblyInfoInputs.cache
+C:\Users\MSE\source\repos\TelegramCommandHandler\TelegramCommandHandler\obj\Debug\netcoreapp2.2\TelegramCommandHandler.AssemblyInfo.cs
+C:\Users\MSE\source\repos\TelegramCommandHandler\TelegramCommandHandler\obj\Debug\netcoreapp2.2\TelegramCommandHandler.dll
+C:\Users\MSE\source\repos\TelegramCommandHandler\TelegramCommandHandler\obj\Debug\netcoreapp2.2\TelegramCommandHandler.pdb
