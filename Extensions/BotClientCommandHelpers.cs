@@ -22,7 +22,7 @@ namespace TelegramCommandHelper.Extensions
         public static void InitializeCommands(this TelegramBotClient client, TelegramCommandHandler commandHandler)
         {
 
-            client.OnMessage += async(sender, e) =>
+            client.OnMessage += async (sender, e) =>
             {
                 await OnMessageReceived(sender, e, client, commandHandler);
             };
@@ -37,10 +37,10 @@ namespace TelegramCommandHelper.Extensions
                 Console.WriteLine("Command detected");
                 string command = e.Message.Text.Substring(commandHandler.Prefix.Length);
                 //For every command module in the registered command modules
-                foreach (var commandModule in commandHandler.RegisteredCommandModules)
+                foreach (var commandModuleType in commandHandler.RegisteredCommandModules)
                 {
                     //Get all the methods that have on a single CommandContext parameter, is async, has a return type of Task, and has the [Command] attribute.
-                    var methods = commandModule.GetMethods()
+                    var methods = commandModuleType.GetMethods()
                         .Where(method =>
                             method.GetParameters()
                                 .Length == 1
@@ -51,14 +51,19 @@ namespace TelegramCommandHelper.Extensions
                     //For every method that satisfies the condition above
                     foreach (var method in methods)
                     {
+                        var commandModule = (CommandModule)Activator.CreateInstance(commandModuleType);
+                        CommandContext ctx = new CommandContext(e.Message, client);
                         //If the method is linked to the sent command
                         if (((Command)method.GetCustomAttributes(typeof(Command), false).FirstOrDefault())?.CommandInvoker?.ToLower() == command.ToLower())
                         {
+                            // Call on the Before Execution Async method
+                            await commandModule.BeforeExecutionAsync(ctx);
                             //Call on its method.
-                            await (Task) method.Invoke(Activator.CreateInstance(commandModule), new object[] {
-                                new CommandContext(e.Message, client)
-                            });
-                            return;
+                            await (Task)method.Invoke(commandModule, new object[] { ctx });
+                            //Call on the After Execution Async method
+                            await commandModule.AfterExecutionAsync(ctx);
+                            //Break the loop.
+                            break;
                         }
                     }
                 }
