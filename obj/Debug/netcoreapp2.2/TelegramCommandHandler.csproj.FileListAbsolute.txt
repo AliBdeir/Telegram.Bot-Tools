@@ -6,3 +6,4 @@ C:\Users\MSE\source\repos\TelegramCommandHandler\TelegramCommandHandler\obj\Debu
 C:\Users\MSE\source\repos\TelegramCommandHandler\TelegramCommandHandler\obj\Debug\netcoreapp2.2\TelegramCommandHandler.AssemblyInfo.cs
 C:\Users\MSE\source\repos\TelegramCommandHandler\TelegramCommandHandler\obj\Debug\netcoreapp2.2\TelegramCommandHandler.dll
 C:\Users\MSE\source\repos\TelegramCommandHandler\TelegramCommandHandler\obj\Debug\netcoreapp2.2\TelegramCommandHandler.pdb
+C:\Users\MSE\source\repos\TelegramCommandHandler\TelegramCommandHandler\obj\Debug\netcoreapp2.2\TelegramCommandHandler.csprojAssemblyReference.cache
