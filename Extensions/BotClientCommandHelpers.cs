@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
-using TelegramCommandHandler.Attributes;
-using TelegramCommandHandler.Tools;
+using TelegramCommandHelper.Attributes;
+using TelegramCommandHelper.Tools;
 
-namespace TelegramCommandHandler.Extensions
+namespace TelegramCommandHelper.Extensions
 {
-    public static class BotClientCommandHelpers
+    public static class BotClientCommandHandler
     {
+
 
         /// <summary>
         /// Initialize the TelegramCommandHandler with the client
@@ -20,39 +21,44 @@ namespace TelegramCommandHandler.Extensions
         /// <param name="commandHandler">Command handler</param>
         public static void InitializeCommands(this TelegramBotClient client, TelegramCommandHandler commandHandler)
         {
-            client.OnMessage += async (sender, e) =>
+
+            client.OnMessage += async(sender, e) =>
             {
-                await OnMessageReceived(sender, e, commandHandler);
+                await OnMessageReceived(sender, e, client, commandHandler);
             };
         }
 
-        private static async Task OnMessageReceived(object sender, MessageEventArgs e, TelegramCommandHandler commandHandler)
+        private static async Task OnMessageReceived(object sender, MessageEventArgs e, TelegramBotClient client, TelegramCommandHandler commandHandler)
         {
             Message message = e.Message;
-            if (message?.Text?.StartsWith("/") == true)
+            if (message?.Text?.StartsWith(commandHandler.Prefix) == true)
             {
                 //Command Detected
-                string command = e.Message.Text.Substring(1);
                 Console.WriteLine("Command detected");
-                foreach (var commandModule in commandHandler.CommandModules)
+                string command = e.Message.Text.Substring(commandHandler.Prefix.Length);
+                //For every command module in the registered command modules
+                foreach (var commandModule in commandHandler.RegisteredCommandModules)
                 {
+                    //Get all the methods that have on a single CommandContext parameter, is async, has a return type of Task, and has the [Command] attribute.
                     var methods = commandModule.GetMethods()
                         .Where(method =>
                             method.GetParameters()
                                 .Length == 1
                             && CommandHandlerUtils.IsSameOrSubclass(method.GetParameters()[0].ParameterType, typeof(CommandContext))
-                            && method.IsStatic
                             && method.IsAsync()
                             && CommandHandlerUtils.IsSameOrSubclass(method.ReturnType, typeof(Task))
                             && method.GetCustomAttributes(typeof(Command), false)?.Any() == true);
+                    //For every method that satisfies the condition above
                     foreach (var method in methods)
                     {
-                        if (((Command)method.GetCustomAttributes(typeof(Command), false)[0]).CommandInvoker == command)
+                        //If the method is linked to the sent command
+                        if (((Command)method.GetCustomAttributes(typeof(Command), false).FirstOrDefault())?.CommandInvoker?.ToLower() == command.ToLower())
                         {
-                            //Command found, call on its method.
+                            //Call on its method.
                             await (Task) method.Invoke(Activator.CreateInstance(commandModule), new object[] {
-                                new CommandContext(e.Message)
+                                new CommandContext(e.Message, client)
                             });
+                            return;
                         }
                     }
                 }

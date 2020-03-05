@@ -3689,9 +3689,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\MSE\\source\\repos\\TelegramCommandHandler\\TelegramCommandHandler\\TelegramCommandHandler.csproj",
-      "projectName": "TelegramCommandHandler",
-      "projectPath": "C:\\Users\\MSE\\source\\repos\\TelegramCommandHandler\\TelegramCommandHandler\\TelegramCommandHandler.csproj",
+      "projectUniqueName": "C:\\Users\\MSE\\source\\repos\\TelegramCommandHandler\\TelegramCommandHandler\\TelegramCommandHelper.csproj",
+      "projectName": "TelegramCommandHelper",
+      "projectPath": "C:\\Users\\MSE\\source\\repos\\TelegramCommandHandler\\TelegramCommandHandler\\TelegramCommandHelper.csproj",
       "packagesPath": "C:\\Users\\MSE\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\MSE\\source\\repos\\TelegramCommandHandler\\TelegramCommandHandler\\obj\\",
       "projectStyle": "PackageReference",

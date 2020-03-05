@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TelegramCommandHandler
+namespace TelegramCommandHelper
 {
     /// <summary>
     /// Base class for command modules.

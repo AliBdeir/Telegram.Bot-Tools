@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace TelegramCommandHandler.Tools
+namespace TelegramCommandHelper.Tools
 {
     public static class CommandHandlerUtils
     {
