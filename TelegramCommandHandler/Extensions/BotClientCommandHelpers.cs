@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
-using TelegramCommandHelper.CommandHandler.Tools;
+using TelegramCommandHandler.Attributes;
+using TelegramCommandHandler.Tools;
+using TelegramCommandHandler.Types;
 
 namespace TelegramCommandHandler.Extensions
 {
