@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TelegramCommandHandler.Attributes
+namespace CommandHandler.Attributes
 {
     /// <summary>
     /// Marks a Task as a Command

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Sample": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "TelegramKey": "805645400:AAFnpadk8LviAaVtglSErwK5j0DovqX8AyM"
+      }
+    }
+  }
+}

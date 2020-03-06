@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using TelegramCommandHandler.Types;
+﻿using CommandHandler.Types;
+using System.Threading.Tasks;
 
-namespace TelegramCommandHandler
+namespace CommandHandler
 {
     /// <summary>
     /// Base class for command modules.
