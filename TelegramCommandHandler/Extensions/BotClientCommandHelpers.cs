@@ -1,4 +1,7 @@
-﻿using System;
+﻿using CommandHandler.Attributes;
+using CommandHandler.Tools;
+using CommandHandler.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -6,11 +9,8 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
-using TelegramCommandHandler.Attributes;
-using TelegramCommandHandler.Tools;
-using TelegramCommandHandler.Types;
 
-namespace TelegramCommandHandler.Extensions
+namespace CommandHandler.Extensions
 {
     public static class BotClientCommandHandler
     {

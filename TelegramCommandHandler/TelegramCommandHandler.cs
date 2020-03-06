@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TelegramCommandHandler
+namespace CommandHandler
 {
     public class TelegramCommandHandler
     {
