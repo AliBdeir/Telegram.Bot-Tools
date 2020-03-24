@@ -18,10 +18,19 @@ namespace CommandHandler
         public string Prefix { get; set; }
 
         /// <summary>
+        /// Determines whether or not commands are case-sensitive.
+        /// </summary>
+        public bool CaseSensitive { get; set; }
+
+        /// <summary>
         /// Create a new telegram command handler.
         /// </summary>
         /// <param name="prefix">Determines what's the prefix for commands. Defaults to a slash (/)</param>
-        public TelegramCommandHandler(string prefix = "/") => Prefix = prefix;
+        public TelegramCommandHandler(string prefix = "/", bool caseSensitive = false)
+        {
+            Prefix = prefix;
+            CaseSensitive = caseSensitive;
+        }
 
         /// <summary>
         /// Register a CommandModule subclass as a command class. You can register multiple classes.
