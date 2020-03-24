@@ -25,6 +25,16 @@ namespace CommandHandler.Tools
                 != null;
         }
 
+        /// <summary>
+        /// Does .ToLower() if not case sensitive, doesn't otherwise.
+        /// </summary>
+        /// <param name="caseSensitive"></param>
+        /// <returns></returns>
+        public static string ToLowerCaseConditioned(this string text, bool caseSensitive)
+        {
+            return caseSensitive ? text : text.ToLower();
+        }
+
 
     }
 }

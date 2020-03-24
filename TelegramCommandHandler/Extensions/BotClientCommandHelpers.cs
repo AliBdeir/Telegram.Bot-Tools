@@ -50,6 +50,7 @@ namespace CommandHandler.Extensions
         {
             //Get the message
             Message message = e.Message;
+            bool caseSensitive = commandHandler.CaseSensitive;
             //Is it a command?
             if (message?.Text?.StartsWith(commandHandler.Prefix) == true)
             {
@@ -71,8 +72,14 @@ namespace CommandHandler.Extensions
                             .GetCustomAttribute(typeof(AliasesAttribute), false)
                             as AliasesAttribute;
                         //If the method is linked to the sent command
-                        if (commandAttribute?.CommandInvoker?.ToLower() == command.ToLower()
-                            || aliasesAttribute?.Aliases?.Any(alias => alias.ToLower() == command) == true)
+                        if (commandAttribute
+                            ?.CommandInvoker?
+                            .ToLowerCaseConditioned(caseSensitive)
+                                == command.ToLowerCaseConditioned(caseSensitive)
+                            || aliasesAttribute
+                            ?.Aliases
+                            ?.Any(alias => alias.ToLowerCaseConditioned(caseSensitive) == command.ToLowerCaseConditioned(caseSensitive))
+                                == true)
                         {
                             //Create a CommandContext to be used
                             CommandContext ctx = new CommandContext(e.Message, client);
