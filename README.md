@@ -12,8 +12,6 @@ Register your command classs(es) using `commandHandler.RegisterCommands<Class>` 
 TelegramCommandHandler commandHandler = new TelegramCommandHandler();
 commandHandler.RegisterCommands<Commands>();
 botClient.InitializeCommands(commandHandler);
-//MANDATORY
-botClient.StartReceiving();
 ```
 ### Commands.cs
 ```csharp
