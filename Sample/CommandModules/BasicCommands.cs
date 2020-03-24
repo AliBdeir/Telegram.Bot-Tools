@@ -23,6 +23,7 @@ namespace Sample.CommandModules
             await Task.Delay(0);
         }
 
+        [Aliases("pingbot")]
         [Command("ping")]
         public async Task PingCommand(CommandContext ctx)
         {
@@ -30,6 +31,7 @@ namespace Sample.CommandModules
             await ctx.RespondAsync($"Pong!");
         }
 
+        [Aliases("today", "whatistoday")]
         [Command("date")]
         public async Task DateCommand(CommandContext ctx)
         {
@@ -38,6 +40,7 @@ namespace Sample.CommandModules
             await ctx.RespondAsync($"Today is {formattedDate}");
         }
 
+        [Aliases("info", "information")]
         [Command("whoami")]
         public async Task WhoAmICommand(CommandContext ctx)
         {

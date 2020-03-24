@@ -37,7 +37,7 @@ namespace CommandHandler.Extensions
                             && CommandHandlerUtils.IsSameOrSubclass(method.GetParameters()[0].ParameterType, typeof(CommandContext))
                             && method.IsAsync()
                             && CommandHandlerUtils.IsSameOrSubclass(method.ReturnType, typeof(Task))
-                            && method.GetCustomAttributes(typeof(Command), false)?.Any() == true)
+                            && method.GetCustomAttributes(typeof(CommandAttribute), false)?.Any() == true)
                         .ToList());
             }
             client.OnMessage += async (sender, e) =>
@@ -64,8 +64,15 @@ namespace CommandHandler.Extensions
                     //Create a command context
                     foreach (var method in moduleMethodsPair.Value)
                     {
+                        var commandAttribute = method
+                                .GetCustomAttribute(typeof(CommandAttribute), false)
+                                as CommandAttribute;
+                        var aliasesAttribute = method
+                            .GetCustomAttribute(typeof(AliasesAttribute), false)
+                            as AliasesAttribute;
                         //If the method is linked to the sent command
-                        if (((Command)method.GetCustomAttributes(typeof(Command), false).FirstOrDefault())?.CommandInvoker?.ToLower() == command.ToLower())
+                        if (commandAttribute?.CommandInvoker?.ToLower() == command.ToLower()
+                            || aliasesAttribute?.Aliases?.Any(alias => alias.ToLower() == command) == true)
                         {
                             //Create a CommandContext to be used
                             CommandContext ctx = new CommandContext(e.Message, client);

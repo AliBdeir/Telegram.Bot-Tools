@@ -6,7 +6,7 @@ namespace CommandHandler.Attributes
     /// Marks a Task as a Command
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class Command : Attribute
+    public class CommandAttribute : Attribute
     {
 
         /// <summary>
@@ -18,7 +18,7 @@ namespace CommandHandler.Attributes
         /// New Command attribute
         /// </summary>
         /// <param name="commandInvoker">Determines what invokes the command to be called, without prefix</param>
-        public Command(string commandInvoker)
+        public CommandAttribute(string commandInvoker)
         {
             CommandInvoker = commandInvoker;
         }
