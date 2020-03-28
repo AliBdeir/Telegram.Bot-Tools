@@ -1,7 +1,10 @@
-﻿using Interactivity.Models;
+﻿using Interactivity.Exceptions;
+using Interactivity.Types;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -13,8 +16,9 @@ namespace Interactivity.Extensions
 
         private static TelegramInteractivity currentInteractivity;
 
-        public static void UseInteractivity(this TelegramBotClient client, TelegramInteractivity interactivity)
+        public static void UseInteractivity(this TelegramBotClient client, InteractivityConfiguration configuration)
         {
+            var interactivity = new TelegramInteractivity(client, configuration);
             currentInteractivity = interactivity;
         }
 
@@ -22,12 +26,6 @@ namespace Interactivity.Extensions
         {
             return currentInteractivity;
         }
-
-        public static async Task<InteractivityResult<Message>> WaitForMessageAsync(
-            this TelegramBotClient client,
-            Predicate<Message> predicate,
-            TimeSpan? defaultTimeSpanOverride,
-            )
 
     }
 }
