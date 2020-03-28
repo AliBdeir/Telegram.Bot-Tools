@@ -4,6 +4,7 @@ using Sample.CommandModules;
 using System;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Interactivity.Extensions;
 
 namespace Sample
 {
@@ -21,7 +22,12 @@ namespace Sample
             );
             var commandHandler = new TelegramCommandHandler();
             commandHandler.RegisterCommands<BasicCommands>();
+            commandHandler.RegisterCommands<InteractivityCommands>();
             botClient.InitializeCommands(commandHandler);
+            botClient.UseInteractivity(new Interactivity.Types.InteractivityConfiguration()
+            {
+                DefaultTimeOutTime = TimeSpan.FromSeconds(5)
+            });
             //MANDATORY
             botClient.StartReceiving();
             Console.ReadKey();
