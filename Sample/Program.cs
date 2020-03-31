@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Interactivity.Extensions;
+using Telegram.Bot.Args;
 
 namespace Sample
 {
@@ -34,5 +35,6 @@ namespace Sample
             botClient.StartReceiving();
             Console.ReadKey();
         }
+
     }
 }

@@ -18,7 +18,7 @@ namespace Sample.CommandModules
             // Ask the user what's their name.
             await ctx.RespondAsync($"Hello! What's your name?");
             // Wait for a result.
-            var result = await ctx.BotClient.GetInteractivity().WaitForMessageAsync(ctx.Chat, ctx.Message.From);
+            var result = await ctx.BotClient.GetInteractivity().WaitForMessageAsync(ctx.Chat, ctx.Message.From,);
             if (result.Value == null)
             {
                 //Timed out
