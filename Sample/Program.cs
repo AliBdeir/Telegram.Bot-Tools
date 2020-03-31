@@ -15,7 +15,9 @@ namespace Sample
 
         static async Task MainAsync(string[] args)
         {
+            // Create a bot client.
             var botClient = new TelegramBotClient(Environment.GetEnvironmentVariable("TelegramKey"));
+            // Get the bot's User.
             var me = await botClient.GetMeAsync();
             Console.WriteLine(
               $"Hello, World! I am user {me.Id} and my name is {me.FirstName}."

@@ -8,26 +8,35 @@ using Telegram.Bot.Types;
 
 namespace Interactivity.Handlers
 {
+    /// <summary>
+    /// Detects and handles interactivity messages.
+    /// </summary>
     public class InteractivityMessageHandler
     {
         public static void OnMessageSent(object sender, MessageEventArgs e, TelegramInteractivity interactivity)
         {
-            if (e.Message?.Text == null || e.Message.Text.StartsWith(interactivity.Configuration.CommandPrefix))
+            // If it's a command, ignore it.
+            if (e.Message.Text?.StartsWith(interactivity.Configuration.CommandPrefix) == true)
             {
                 return;
             }
+            // Get the interactivity object of this message.
             var iObject = interactivity.CurrentMessageInteractivityObjects
                 .FirstOrDefault(obj =>
                     e.Message.Chat.Id == obj.Chat.Id
                     && (obj.Predicate == null || obj.Predicate.Invoke(e.Message)));
+            // Null check
             if (iObject != null)
             {
-                iObject.InteractivityResult = new InteractivityResult<Message>(e.Message, iObject.InteractivityResult?.TimedOut ?? false);
-                if (iObject.InteractivityResult?.TimedOut == null
-                    || iObject.InteractivityResult.TimedOut == false)
+                // Set its result.
+                iObject.InteractivityResult = 
+                    new InteractivityResult<Message>
+                    (e.Message, iObject.InteractivityResult?.TimedOut ?? false);
+                // If it hasn't timed out
+                if (iObject.InteractivityResult?.TimedOut == false)
                 {
                     interactivity.CurrentMessageInteractivityObjects.Remove(iObject);
-                    iObject.Token.Cancel();
+                    iObject.TimeoutThreadToken.Cancel();
                     iObject.WaitHandle.Set();
                 }
             }
