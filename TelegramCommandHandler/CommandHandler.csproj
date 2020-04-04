@@ -11,13 +11,14 @@
     <PackageIconUrl />
     <RepositoryUrl>https://github.com/AliBdeir/Telegram.Bot-Tools/tree/master/TelegramCommandHandler</RepositoryUrl>
     <PackageTags>Telegram Bot Telegram Commands Command Helper Command Module</PackageTags>
-    <AssemblyVersion>1.4.1.20</AssemblyVersion>
-    <FileVersion>1.4.1.20</FileVersion>
+    <AssemblyVersion>1.4.4.20</AssemblyVersion>
+    <FileVersion>1.4.4.20</FileVersion>
     <PackageId>Telegram.Bot.CommandHandler</PackageId>
     <Authors>Ali Bdeir</Authors>
     <Company />
     <Product>Telegram Command Handler</Product>
-    <Version>1.4.1.2</Version>
+    <Version>1.4.4.2</Version>
+    <PackageReleaseNotes>Made Before and AfterExecutionAsync an async Task.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

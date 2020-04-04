@@ -14,14 +14,14 @@ namespace CommandHandler
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        public virtual Task BeforeExecutionAsync(CommandContext ctx) => Task.Delay(0);
+        public virtual async Task BeforeExecutionAsync(CommandContext ctx) => await Task.Delay(0);
 
         /// <summary>
         /// Called after a command is executed.
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        public virtual Task AfterExecutionAsync(CommandContext ctx) => Task.Delay(0);
+        public virtual async Task AfterExecutionAsync(CommandContext ctx) => await Task.Delay(0);
 
     }
 }
