@@ -5,6 +5,6 @@ A library that aims to support the C# [Telegram.Bot](https://github.com/Telegram
  
 - [Providing an easy way to carry out interactions between users and bots](/TelegramInteractivityHelper).
 
-## Sample
+## Samples
 
 For a sample on how to utilize both these libraries, check out the [Sample directory](/Sample).
