@@ -13,9 +13,11 @@
     <PackageIconUrl />
     <RepositoryUrl>https://github.com/AliBdeir/Telegram.Bot-Tools/tree/master/TelegramInteractivityHelper</RepositoryUrl>
     <PackageTags>Telegram Bot Interactivity Interactions Wait for message</PackageTags>
-    <AssemblyVersion>1.4.1.20</AssemblyVersion>
-    <FileVersion>1.4.1.20</FileVersion>
-    <Version>1.4.1.2</Version>
+    <AssemblyVersion>1.5.0.0</AssemblyVersion>
+    <FileVersion>1.5.0.0</FileVersion>
+    <Version>1.5.0.0</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
