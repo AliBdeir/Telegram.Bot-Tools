@@ -1,5 +1,4 @@
 ﻿using Interactivity.Exceptions;
-using Interactivity.Extensions;
 using Interactivity.Types;
 using System;
 using System.Collections.Generic;
@@ -7,47 +6,31 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 
 namespace Interactivity
 {
-    public partial class TelegramInteractivity
+    public static class TelegramInteractivity
     {
-        /// <summary>
-        /// The client associated with this interactivity object.
-        /// </summary>
-        private readonly TelegramBotClient client;
         /// <summary>
         /// The current Message Interactivity processes with this client.
         /// </summary>
-        public List<InteractivityProcess<Message>> CurrentMessageInteractivityObjects { get; set; } = new List<InteractivityProcess<Message>>();
-        /// <summary>
-        /// The configuration of this process.
-        /// </summary>
-        public InteractivityConfiguration Configuration { get; set; }
+        private static List<InteractivityProcess<Message>> _currentMessageInteractivityObjects { get; set; } = new List<InteractivityProcess<Message>>();
 
         /// <summary>
-        /// Create a new telegram interactivity object.
+        /// Current interactivity objects
         /// </summary>
-        /// <param name="client">The client to associate with this object.</param>
-        /// <param name="configuration">This object's configuration.</param>
-        public TelegramInteractivity(TelegramBotClient client, InteractivityConfiguration configuration)
-        {
-            this.client = client;
-            this.Configuration = configuration;
-            Setup();
-        }
+        private static readonly Dictionary<ITelegramBotClient, InteractivityConfiguration> _interactivitiesConfigurations = new Dictionary<ITelegramBotClient, InteractivityConfiguration>();
+
 
         /// <summary>
-        /// Setup the handler.
+        /// Use Interactivity with this Bot Client.
         /// </summary>
-        private void Setup()
+        /// <param name="client">Your TelegramBotClient</param>
+        /// <param name="configuration">Interactivity Configuration</param>
+        public static void UseInteractivity(this ITelegramBotClient client, InteractivityConfiguration configuration)
         {
-            client.OnMessage += (sender, e) =>
-            {
-                Handlers.InteractivityMessageHandler.OnMessageSent(sender, e, this);
-            };
+            _interactivitiesConfigurations.Add(client, configuration);
         }
 
         /// <summary>
@@ -58,30 +41,34 @@ namespace Interactivity
         /// <param name="condition">The message's condition. If null, all messages will be accepted as a result.</param>
         /// <param name="defaultTimeoutTimeOverride">Overrides the TelegramInteractivity's configuration's DefaultTimeOutTime.</param>
         /// <returns></returns>
-        public async Task<InteractivityResult<Message>> WaitForMessageAsync(
+        public static async Task<InteractivityResult<Message>> WaitForMessageAsync(
+            this ITelegramBotClient client,
             Chat chat,
             User author,
             Predicate<Message> condition = null,
             TimeSpan? defaultTimeoutTimeOverride = null)
         {
-            // Get the interactivity.
-            var interactivity = client.GetInteractivity();
+
+            var configuration = _interactivitiesConfigurations[client];
+
             // Check if there is already an ongoing process.
-            if (CurrentMessageInteractivityObjects.Any(x => x.Author.Id == author.Id))
+            if (_currentMessageInteractivityObjects.Any(x => x.BotId == client.BotId && x.Author.Id == author.Id))
             {
-                await client.SendTextMessageAsync(chat, interactivity.Configuration.UserAlreadyHasOngoingOperationMessage);
-                return new InteractivityResult<Message>(null, false);
+                await client.SendTextMessageAsync(chat, configuration.UserAlreadyHasOngoingOperationMessage);
+                return new InteractivityResult<Message>(null, false, false);
             }
+
             // Get the timeout time.
-            var timeOutTime = defaultTimeoutTimeOverride.HasValue ? defaultTimeoutTimeOverride :
-                interactivity.Configuration.DefaultTimeOutTime;
+            var timeOutTime = defaultTimeoutTimeOverride.HasValue ? defaultTimeoutTimeOverride : configuration.DefaultTimeOutTime;
+
             // Create a new cancellation token for the time out thread.
             var cancellationTokenSource = new CancellationTokenSource();
             // Create a new process object.
-            var iObject = new InteractivityProcess<Message>(cancellationTokenSource, chat, author,condition);
+            var iObject = new InteractivityProcess<Message>(client.BotId.Value, chat, author, cancellationTokenSource, condition);
+
             // Add it to the current processes.
-            interactivity.CurrentMessageInteractivityObjects
-                .Add(iObject);
+            _currentMessageInteractivityObjects.Add(iObject);
+
             // If the timespan is not infinite/null, create a new thread to cancel the process after the time.
             if (timeOutTime.HasValue)
             {
@@ -93,8 +80,8 @@ namespace Interactivity
                     // If it hasn't been cancelled
                     if (!cancelled)
                     {
-                        CurrentMessageInteractivityObjects.Remove(iObject);
-                        iObject.InteractivityResult = new InteractivityResult<Message>(null, true);
+                        _currentMessageInteractivityObjects.Remove(iObject);
+                        iObject.InteractivityResult = new InteractivityResult<Message>(null, true, false);
                         iObject.WaitHandle.Set();
                     }
                 }).Start();
@@ -104,10 +91,46 @@ namespace Interactivity
             return iObject.InteractivityResult;
         }
 
-        public void ClearOnGoingProcesses()
+
+        public static void ClearOnGoingProcesses(this ITelegramBotClient client)
         {
-            CurrentMessageInteractivityObjects.Clear();
+            _currentMessageInteractivityObjects.RemoveAll(x => x.BotId == client.BotId);
         }
 
+
+        public static async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        {
+            var configuration = GetInteractivityConfiguration(botClient);
+
+            // Get the interactivity object of this message.
+            var iObject = _currentMessageInteractivityObjects.FirstOrDefault(obj => obj.BotId == botClient.BotId && update.Message.Chat.Id == obj.Chat.Id && (obj.Predicate == null || obj.Predicate.Invoke(update.Message)));
+
+            if (iObject == null)
+                return;
+
+            var isCommand = update.Message.Text?.StartsWith(configuration.CommandPrefix) == true;
+
+            // Set its result.
+            iObject.InteractivityResult = new InteractivityResult<Message>(update.Message,  
+                iObject.InteractivityResult?.IsTimedOut ?? false,
+                iObject.InteractivityResult?.IsInterrupted ?? isCommand);
+
+            // If it hasn't timed out
+            if (iObject.InteractivityResult?.IsTimedOut == false)
+            {
+                _currentMessageInteractivityObjects.Remove(iObject);
+                iObject.TimeoutThreadToken.Cancel();
+                iObject.WaitHandle.Set();
+            }
+        }
+
+        private static InteractivityConfiguration GetInteractivityConfiguration(ITelegramBotClient botClient)
+        {
+            if (_interactivitiesConfigurations.TryGetValue(botClient, out var interactivityConfiguration))
+                return interactivityConfiguration;
+
+            throw new InteractivityNotUsedException();
+        }
     }
+
 }

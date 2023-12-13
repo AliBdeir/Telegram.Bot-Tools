@@ -1,11 +1,9 @@
 ﻿using CommandHandler;
 using CommandHandler.Attributes;
 using CommandHandler.Types;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Interactivity;
 using System.Threading.Tasks;
-using Interactivity.Extensions;
+using Telegram.Bot;
 
 namespace Sample.CommandModules
 {
@@ -18,8 +16,12 @@ namespace Sample.CommandModules
             // Ask the user what's their name.
             await ctx.RespondAsync($"Hello! What's your name?");
             // Wait for a result.
-            var result = await ctx.BotClient.GetInteractivity().WaitForMessageAsync(ctx.Chat, ctx.Message.From);
-            if (result.Value == null)
+            var result = await ctx.BotClient.WaitForMessageAsync(ctx.Chat, ctx.Message.From);
+
+            if (result.IsInterrupted)
+                return;
+
+            if (result.IsTimedOut)
             {
                 //Timed out
                 await ctx.RespondAsync($"Timed out. Please try again.");
@@ -34,6 +36,5 @@ namespace Sample.CommandModules
                 await ctx.RespondAsync($"Hello, {message.Text}! I am {me.FirstName}.");
             }
         }
-
     }
 }

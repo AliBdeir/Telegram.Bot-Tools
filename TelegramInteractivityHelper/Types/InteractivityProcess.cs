@@ -1,7 +1,5 @@
 ﻿using Interactivity.Tools;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using Telegram.Bot.Types;
 
@@ -13,27 +11,38 @@ namespace Interactivity.Types
         /// <summary>
         /// The Chat of this interactivity process.
         /// </summary>
+        public long BotId { get; set; }
+
+        /// <summary>
+        /// The Chat of this interactivity process.
+        /// </summary>
         public Chat Chat { get; set; }
+
         /// <summary>
         /// This process's condition.
         /// </summary>
         public Predicate<T> Predicate { get; set; }
+
         /// <summary>
         /// The wait handle of this process.
         /// </summary>
         public AsyncAutoResetEvent WaitHandle { get; } = new AsyncAutoResetEvent();
+
         /// <summary>
         /// The result of this process.
         /// </summary>
         public InteractivityResult<T> InteractivityResult { get; set; }
+
         /// <summary>
         /// The cancellation token of the time out thread.
         /// </summary>
         public CancellationTokenSource TimeoutThreadToken { get; private set; }
+
         /// <summary>
         /// The Author of this interactivity process..
         /// </summary>
         public User Author { get; set; }
+
         /// <summary>
         /// Create a new InteractivityProcess object.
         /// </summary>
@@ -41,15 +50,17 @@ namespace Interactivity.Types
         /// <param name="chat">The chat of this process.</param>
         /// <param name="author">The author of this process.</param>
         /// <param name="predicate">The condition of this process.</param>
-        public InteractivityProcess(CancellationTokenSource timeoutThreadToken,
+        public InteractivityProcess(long botId,
             Chat chat,
             User author,
+            CancellationTokenSource timeoutThreadToken,
             Predicate<T> predicate = null)
         {
             this.TimeoutThreadToken = timeoutThreadToken;
             this.Chat = chat;
             this.Author = author;
             this.Predicate = predicate;
+            this.BotId = botId;
         }
 
     }

@@ -1,11 +1,13 @@
 ﻿using CommandHandler;
-using CommandHandler.Extensions;
+using Interactivity;
 using Sample.CommandModules;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using Interactivity.Extensions;
-using Telegram.Bot.Args;
+using Telegram.Bot.Polling;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace Sample
 {
@@ -26,15 +28,30 @@ namespace Sample
             var commandHandler = new TelegramCommandHandler();
             commandHandler.RegisterCommands<BasicCommands>();
             commandHandler.RegisterCommands<InteractivityCommands>();
-            botClient.InitializeCommands(commandHandler);
+
             botClient.UseInteractivity(new Interactivity.Types.InteractivityConfiguration()
             {
-                DefaultTimeOutTime = TimeSpan.FromSeconds(5)
+                DefaultTimeOutTime = TimeSpan.FromMinutes(1)
             });
-            //MANDATORY
-            botClient.StartReceiving();
-            Console.ReadKey();
+
+            using (var cts = new CancellationTokenSource())
+            {
+                var receiverOptions = new ReceiverOptions { AllowedUpdates = new[] { UpdateType.Message, }, ThrowPendingUpdates = true };
+
+                var handlersPipe = async (ITelegramBotClient botClient, Update update, CancellationToken cancellationToken) =>
+                {
+                   _ = Task.WhenAll( // Sholdn't be awaited since commandHandler can wait Interactivity
+                            TelegramInteractivity.UpdateHandler(botClient, update, cancellationToken),
+                            commandHandler.UpdateHandler(botClient, update, cancellationToken)
+                        ).ConfigureAwait(false);
+                };
+
+                //MANDATORY
+                botClient.StartReceiving(handlersPipe, ErrorHandler, receiverOptions, cts.Token);
+                Console.ReadKey();
+            }
         }
 
+        static Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken) { return Task.CompletedTask; }
     }
 }
