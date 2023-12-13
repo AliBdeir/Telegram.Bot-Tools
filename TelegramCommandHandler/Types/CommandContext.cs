@@ -13,10 +13,12 @@ namespace CommandHandler.Types
         /// Message that invoked the command
         /// </summary>
         public Message Message { get; private set; }
+
         /// <summary>
         /// Bot client
         /// </summary>
-        public TelegramBotClient BotClient { get; private set; }
+        public ITelegramBotClient BotClient { get; private set; }
+
         /// <summary>
         /// Id of the message that invoked the command
         /// </summary>
@@ -26,6 +28,7 @@ namespace CommandHandler.Types
                 return Message.MessageId;
             }
         }
+
         /// <summary>
         /// Chat of the message that invoked the command
         /// </summary>
@@ -35,6 +38,7 @@ namespace CommandHandler.Types
                 return Message.Chat;
             }
         }
+
         /// <summary>
         /// Id of the chat of the message that invoked the command
         /// </summary>
@@ -50,7 +54,7 @@ namespace CommandHandler.Types
         /// </summary>
         /// <param name="message">Message that invoked the command</param>
         /// <param name="botClient">Bot client</param>
-        public CommandContext(Message message, TelegramBotClient botClient)
+        public CommandContext(Message message, ITelegramBotClient botClient)
         {
             Message = message;
             BotClient = botClient;
